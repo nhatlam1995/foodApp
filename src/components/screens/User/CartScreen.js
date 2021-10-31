@@ -1,14 +1,14 @@
 import React from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 
-const ForgotPassword = () => {
+const CartScreen = () => {
     return (
         <View>
-            <Text></Text>
+            <Text>CartScreen</Text>
         </View>
     )
 }
 
-export default ForgotPassword
+export default CartScreen
 
 const styles = StyleSheet.create({})

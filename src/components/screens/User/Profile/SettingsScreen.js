@@ -3,9 +3,9 @@ import { StyleSheet, Text, View } from 'react-native'
 
 const SettingsScreen = () => {
     return (
-        <View>
+        <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
             <Text>SettingsScreen</Text>
-        </View>
+        </SafeAreaView>
     )
 }
 

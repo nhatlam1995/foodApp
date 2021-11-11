@@ -1,11 +1,12 @@
 import React from 'react'
+import { SafeAreaView } from 'react-native'
 import { StyleSheet, Text, View } from 'react-native'
 
 const FavoriteScreen = () => {
     return (
-        <View>
+        <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
             <Text>FavoriteScreen</Text>
-        </View>
+        </SafeAreaView>
     )
 }
 

@@ -1,11 +1,11 @@
 import React from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, Text, View, SafeAreaView } from 'react-native'
 
 const OrderDetailScreen = () => {
     return (
-        <View>
+        <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
             <Text>OrderDetailScreen</Text>
-        </View>
+        </SafeAreaView>
     )
 }
 

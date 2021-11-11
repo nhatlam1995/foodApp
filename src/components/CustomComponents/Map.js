@@ -1,12 +1,12 @@
 import { useNavigation } from '@react-navigation/core'
 import React from 'react'
-import { StyleSheet, View } from 'react-native'
+import { StyleSheet, View, SafeAreaView } from 'react-native'
 import MapView, { Marker } from "react-native-maps"
 
 const MapCheck = () => {
     const { goBack } = useNavigation();
     return (
-        <View style={{ flex: 1 }}>
+        <SafeAreaView style={{ flex: 1 }}>
             <MapView
                 style={{ flex: 1 }}
                 initialRegion={{
@@ -32,7 +32,7 @@ const MapCheck = () => {
                     description="9 9 1 5's Restaurant"
                 />
             </MapView>
-        </View>
+        </SafeAreaView>
     )
 }
 

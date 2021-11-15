@@ -2,6 +2,7 @@ import { useNavigation } from '@react-navigation/core';
 import React from 'react';
 import { Image, StyleSheet, Text, TouchableOpacity, View, SafeAreaView } from 'react-native';
 import Onboarding from 'react-native-onboarding-swiper';
+import { Images } from '../../../assets/images';
 import { colors } from '../../../assets/strings';
 
 const Dots = ({ selected }) => {
@@ -57,8 +58,8 @@ const OnboardingScreen = () => {
             NextButtonComponent={Next}
             DoneButtonComponent={Done}
             DotComponent={Dots}
-            onSkip={() => replace("LoginScreen")}
-            onDone={() => replace("LoginScreen")}
+            onSkip={() => replace("SplashScreen")}
+            onDone={() => replace("SplashScreen")}
             titleStyles={{ paddingBottom: 40, color: colors.white }}
             subTitleStyles={{ fontSize: 18, color: colors.white }}
             containerStyles={{ backgroundColor: colors.accent }}
@@ -66,21 +67,21 @@ const OnboardingScreen = () => {
             pages={[
                 {
                     backgroundColor: '#fff',
-                    image: <Image style={{ height: 300, width: 310 }} resizeMode={'contain'} source={require('../../../assets/images/onboarding1.png')} />,
+                    image: <Image style={{ height: 300, width: 310 }} resizeMode={'contain'} source={Images.onboarding} />,
                     title: 'Select a restaurant',
-                    subtitle: 'The nearest restaurant around you.',
+                    subtitle: 'Let find the nearest restaurant around you.',
                 },
                 {
                     backgroundColor: '#fff',
-                    image: <Image style={{ height: 300, width: 310 }} resizeMode={'contain'} source={require('../../../assets/images/onboarding2.png')} />,
+                    image: <Image style={{ height: 300, width: 310 }} resizeMode={'contain'} source={Images.onboarding2} />,
                     title: 'Order which food you like',
-                    subtitle: 'Select your favorite food and purschase.',
+                    subtitle: 'Select your favorite food and order it.',
                 },
                 {
                     backgroundColor: '#fff',
-                    image: <Image style={{ height: 300, width: 310 }} resizeMode={'contain'} source={require('../../../assets/images/onboarding3.png')} />,
+                    image: <Image style={{ height: 300, width: 310 }} resizeMode={'contain'} source={Images.onboarding3} />,
                     title: 'Deliver to your home',
-                    subtitle: "The order will be delivery right away!",
+                    subtitle: "The order will be delivered as soon as possible!",
                 },
             ]}
         />

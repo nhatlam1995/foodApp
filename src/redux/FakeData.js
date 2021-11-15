@@ -1,3 +1,5 @@
+import icons from "../assets/icons/icons"
+
 export const dataHome = [
     {
         moduleID: 1,
@@ -685,4 +687,37 @@ export const dataHistory = [
             }
         ]
     }
+]
+
+export const categoryData = [
+    {
+        id: 1,
+        name: "Rice",
+        icon: icons.rice_bowl,
+    },
+    {
+        id: 2,
+        name: "Noodles",
+        icon: icons.noodle,
+    },
+    {
+        id: 3,
+        name: "Hot Dogs",
+        icon: icons.hotdog,
+    },
+    {
+        id: 4,
+        name: "Pizza",
+        icon: icons.pizza,
+    },
+    {
+        id: 5,
+        name: "Desserts",
+        icon: icons.donut,
+    },
+    {
+        id: 6,
+        name: "Drinks",
+        icon: icons.drink,
+    },
 ]

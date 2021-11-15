@@ -1,3 +1,6 @@
+import { Dimensions } from "react-native";
+const { width, height } = Dimensions.get("window");
+
 const colors = {
   accent: "#4dc2f8",
   primary: "#0AC4BA",
@@ -7,6 +10,13 @@ const colors = {
   gray: "#9DA3B4",
   blue: "#007aff",
   red: "#F3534A",
+};
+
+const sizes = {
+  radius: 30,
+  padding: 10,
+  width,
+  height
 };
 
 const fonts = {
@@ -20,6 +30,12 @@ const fonts = {
     color: colors.accent,
     fontFamily: "Roboto-Regular"
   },
+  fontMediumBold: {
+    fontSize: 16,
+    color: colors.accent,
+    fontFamily: "Roboto-Regular",
+    fontWeight: "bold"
+  },
   fontLarge: {
     fontSize: 18,
     color: colors.accent,
@@ -27,4 +43,4 @@ const fonts = {
   }
 }
 
-export { colors, fonts }
+export { colors, fonts, sizes }

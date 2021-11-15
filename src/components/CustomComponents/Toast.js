@@ -1,5 +1,5 @@
 import React from 'react'
-import { StyleSheet, Text, ToastAndroid, View } from 'react-native'
+import { ToastAndroid } from 'react-native'
 
 export const showToast = (message) => {
     return (
@@ -10,5 +10,3 @@ export const showToast = (message) => {
         )
     )
 };
-
-const styles = StyleSheet.create({})

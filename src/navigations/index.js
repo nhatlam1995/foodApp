@@ -15,7 +15,6 @@ import MembershipScreen from "../components/screens/User/Profile/MembershipScree
 import OrderDetailScreen from "../components/screens/User/Profile/OrderDetailScreen";
 import ProfileScreen from "../components/screens/User/Profile/ProfileScreen";
 import SettingsScreen from "../components/screens/User/Profile/SettingsScreen";
-import SearchScreen from "../components/screens/User/SearchScreen";
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -53,17 +52,6 @@ function CartStack() {
     )
 }
 
-function SearchStack() {
-    return (
-        <Stack.Navigator
-            initialRouteName='SearchScreen'
-            screenOptions={{ headerShown: false }}>
-            <Stack.Screen name='SearchScreen' component={SearchScreen} />
-            <Stack.Screen name='FoodDetail' component={FoodDetailScreen} />
-        </Stack.Navigator>
-    )
-}
-
 function ProfileStack() {
     return (
         <Stack.Navigator
@@ -88,19 +76,11 @@ export default function MyTabs() {
                 tabBarActiveTintColor: '#4dc2f8',
                 tabBarInactiveTintColor: 'grey'
             }}>
-            <Tab.Screen name='Search' component={SearchStack}
-                options={{
-                    tabBarLabel: 'Search',
-                    tabBarIcon: ({ color, size }) => (
-                        <FontAwesome name="search" color={color} size={size} />
-                    )
-                }} />
-
             <Tab.Screen name="Favorites" component={FavoritesStack}
                 options={{
                     tabBarLabel: 'Favorites',
                     tabBarIcon: ({ color, size }) => (
-                        <MaterialIcons name="favorite-border" color={color} size={size} />
+                        <MaterialIcons name="favorite-border" color={color} size={30} />
                     ),
                 }}
             />
@@ -108,20 +88,8 @@ export default function MyTabs() {
                 options={{
                     tabBarLabel: 'Home',
                     tabBarIcon: ({ color, size }) => (
-                        <View
-                            style={{
-                                position: 'absolute',
-                                bottom: 0, // space from bottombar
-                                height: 60,
-                                width: 60,
-                                borderRadius: 60,
-                                justifyContent: 'center',
-                                alignItems: 'center',
-                            }}
-                        >
-                            <MaterialCommunityIcons name="home" color={color} size={60} />
-                        </View>
-                    )
+                        <MaterialCommunityIcons name="home" color={color} size={40} />
+                    ),
                 }}
             />
             <Tab.Screen name="Cart" component={CartStack}
@@ -130,7 +98,7 @@ export default function MyTabs() {
                     // tabBarBadge: quantity,
                     tabBarBadgeStyle: { backgroundColor: '#4dc2f8', color: 'white', left: 5, top: -1, justifyContent: 'center', alignItems: 'center', fontSize: 12 },
                     tabBarIcon: ({ color, size }) => (
-                        <MaterialCommunityIcons name="cart-outline" color={color} size={size} />
+                        <MaterialCommunityIcons name="cart-outline" color={color} size={32} />
                     ),
                 }}
             />

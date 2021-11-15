@@ -1,87 +1,137 @@
 import { useNavigation } from '@react-navigation/core'
-import React, { useState } from 'react'
-import { FlatList, Image, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import React, { useEffect, useState } from 'react'
+import { ActivityIndicator, FlatList, Image, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { Badge } from 'react-native-elements/dist/badge/Badge'
 import { useDispatch, useSelector } from 'react-redux'
-import { addToCartAction } from '../../../redux/actions'
-import { dataHome } from '../../../redux/FakeData'
+import { sizes, colors, fonts } from '../../../assets/strings'
+import { getCategory, getUserFavorite } from '../../../redux/actions'
+import { categoryData } from '../../../redux/FakeData'
 import { thousand } from '../../../ultils/commonFunctions'
+import HeaderCustom from '../../CustomComponents/HeaderCustom'
 
 const HomeScreen = () => {
     const dispatch = useDispatch();
-    const data = useSelector((state) => state.cartItem)
+
+    useEffect(() => {
+        dispatch(getCategory());
+        dispatch(getUserFavorite());
+    }, [])
+
+    const homeData = useSelector((state) => state.home);
+    const favoriteData = useSelector((state) => state.favorite);
+
+    console.log('homeData Check: ', homeData)
+    console.log('favorite Check: ', favoriteData)
+
+    const [selectedId, setSelectedID] = useState(0);
 
     const onClick = (id) => {
-        setCategoryID(id)
         if (selectedId === id)
             setSelectedID(id)
         else
             setSelectedID(id)
     }
 
-    const { navigate } = useNavigation();
+    function renderHeader() {
+        const renderHeaderItem = ({ item, index }) => {
+            return (
+                <TouchableOpacity
+                    onPress={() => {
+                        onClick(index)
+                    }}
+                    key={item._id}
+                    style={{ width: 80, height: 110, backgroundColor: index === selectedId ? colors.accent : colors.white, justifyContent: 'center', alignItems: 'center', borderRadius: 30, marginHorizontal: 5, marginVertical: 5, borderWidth: 1, borderColor: colors.accent }}>
+                    <View style={{ width: 50, height: 50, borderRadius: sizes.radius, justifyContent: 'center', alignItems: 'center', backgroundColor: 'white', borderWidth: 0.50, borderColor: colors.accent }}>
+                        <Image source={item.icon} style={{ width: 30, height: 30 }} />
+                    </View>
+                    <Text style={{ fontSize: 16, color: index === selectedId ? colors.white : colors.accent }}>{item.name}</Text>
+                </TouchableOpacity>
+            )
+        }
+        return (
+            <View style={{ flexDirection: 'row', height: 130, alignItems: 'center' }}>
+                <FlatList
+                    horizontal
+                    data={categoryData}
+                    extraData={selectedId}
+                    showsHorizontalScrollIndicator={false}
+                    renderItem={renderHeaderItem}
+                />
+            </View>
+        )
+    }
 
-    const [categoryID, setCategoryID] = useState(0);
+    function renderFoodList() {
+        const { navigate } = useNavigation();
 
-    const [selectedId, setSelectedID] = useState(0);
-
-    console.log(data)
-    return (
-        <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
-            {/* <View style={{ flex: 1, marginVertical: 10 }}>
-                    <FlatList
-                        horizontal
-                        data={dataHome}
-                        extraData={selectedId}
-                        showsHorizontalScrollIndicator={false}
-                        renderItem={({ item, index }) => (
-                            <TouchableOpacity onPress={() => {
-                                onClick(index)
-                                console.log(index)
-                            }} key={item.moduleID.toString()} style={{ width: 90, height: 30, backgroundColor: index === selectedId ? '#4dc2f8' : 'grey', justifyContent: 'center', alignItems: 'center', borderRadius: 5, marginHorizontal: 5, marginVertical: 5 }}>
-                                <Text style={{ fontSize: 16, color: 'white' }}>{item.moduleName}</Text>
-                            </TouchableOpacity>
-                        )}
-                    />
+        if (homeData.data.response ? homeData.data.response.loading : true) {
+            return (
+                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                    <ActivityIndicator size="large" />
                 </View>
-                <View style={{ flex: 15 }}>
-                    <FlatList
-                        data={dataHome[categoryID].moduleData}
-                        showsVerticalScrollIndicator={false}
-                        numColumns={2}
-                        columnWrapperStyle={{ justifyContent: 'space-between' }}
-                        contentContainerStyle={{ paddingHorizontal: 25, }}
-                        renderItem={({ item, index }) => (
-                            <View style={{ width: '45%' }}>
-                                <TouchableOpacity
-                                    style={{ flex: 1, marginVertical: 10, borderWidth: 1, borderColor: '#4dc2f8', borderRadius: 10 }}
-                                    key={index}
-                                >
-                                    <View style={{ flex: 1, width: '100%', height: '100%', alignItems: 'center', borderRadius: 10 }}>
-                                        <View style={{ flex: 1, width: '100%', height: '100%', alignItems: 'center', borderRadius: 10, marginHorizontal: 15, paddingVertical: 5 }}>
-                                            <View style={{ height: '60%', alignItems: 'center', justifyContent: 'center' }}>
-                                                <View style={{ width: 110, height: 110 }}>
-                                                    <Image source={{ uri: item.url }} style={{ width: '100%', height: '100%', resizeMode: 'contain', borderRadius: 5 }} />
-                                                </View>
-                                            </View>
-                                            <View style={{ width: '80%', height: '40%', justifyContent: 'space-around', alignItems: 'center' }}>
-                                                <Text style={{ color: 'gray', fontSize: 12, fontStyle: 'italic' }}>{item.weight}</Text>
-                                                <Text style={{ fontWeight: 'bold' }}>{thousand(item.price)}VNĐ</Text>
-                                                <Text numberOfLines={1} style={{ color: '#4dc2f8', fontWeight: 'bold', fontSize: 16 }}>{item.name}</Text>
-                                                <Text style={{ color: 'gray', fontSize: 12 }}>{item.nation}</Text>
-                                            </View>
-                                        </View>
-                                    </View>
-                                </TouchableOpacity >
-                                <View style={{ marginLeft: 15, flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
-                                    <TouchableOpacity onPress={() => {
-                                        dispatch(addToCartAction(item))
-                                    }} style={{ height: 30, width: 110, backgroundColor: '#4dc2f8', borderRadius: 5, justifyContent: 'center', alignItems: 'center' }}><Text style={{ color: 'white', fontSize: 15 }}>Add to cart</Text></TouchableOpacity>
-                                </View>
-                                <View style={{ marginLeft: 15, borderWidth: .5, marginTop: 10, borderColor: '#4dc2f8' }} />
-                            </View>
-                        )}
-                    />
-                </View> */}
+            )
+        }
+
+        const renderItem = ({ item, index }) => {
+            return (
+                <TouchableOpacity
+                    style={{
+                        marginBottom: sizes.padding * 2, width: 350, borderBottomWidth: 1, paddingBottom: sizes.padding * 2, borderBottomColor: colors.accent,
+
+                    }}
+                    onPress={() => navigate('FoodDetail', {
+                        id: item._id,
+                        url: item.url,
+                        weight: item.weight,
+                        price: item.price,
+                        name: item.name,
+                        nation: item.nation,
+                        status: item.status,
+                        description: item.description
+                    })}>
+                    <View
+                        style={{
+                            marginBottom: sizes.padding,
+                        }}
+                    >
+                        <Image source={{ uri: item.url }} style={{ width: '100%', height: 300, borderRadius: sizes.radius }} resizeMode='cover' />
+                        <View
+                            style={{
+                                position: 'absolute',
+                                bottom: 0,
+                                height: 50,
+                                width: sizes.width * 0.3,
+                                backgroundColor: colors.white,
+                                borderTopRightRadius: sizes.radius,
+                                borderBottomLeftRadius: sizes.radius,
+                                borderWidth: 0.5,
+                                borderColor: colors.accent,
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                            }}
+                        >
+                            <Text style={{ ...fonts.fontMedium, fontWeight: "bold" }}>{thousand(item.price)}VNĐ</Text>
+                        </View>
+                    </View>
+                    <Text style={{ ...fonts.fontMedium, fontWeight: "bold" }}>{item.name}</Text>
+                </TouchableOpacity >
+            )
+        }
+        return (
+            <FlatList
+                data={homeData.data.response ? homeData.data.response.categoryLists[selectedId].categoryData : null}
+                showsVerticalScrollIndicator={false}
+                contentContainerStyle={{ width: '100%', alignItems: 'center' }}
+                renderItem={renderItem}
+            />
+        )
+    }
+
+    return (
+        <SafeAreaView style={{ flex: 1 }}>
+            <HeaderCustom isSearch title={'Home'} />
+            {renderHeader()}
+            {renderFoodList()}
         </SafeAreaView>
     )
 }

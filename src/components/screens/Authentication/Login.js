@@ -1,15 +1,72 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/core';
-import React, { useState } from 'react';
-import { StyleSheet, Text, TextInput, TouchableOpacity, View, SafeAreaView } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { ActivityIndicator, SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import { CheckBox } from 'react-native-elements';
 import LinearGradient from 'react-native-linear-gradient';
 import Feather from 'react-native-vector-icons/Feather';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import { useDispatch, useSelector } from 'react-redux';
+import { loginAction } from '../../../redux/actions';
 
 const Login = () => {
-    const [secureEntry, setSecureEntry] = useState(false);
     const { navigate } = useNavigation();
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('admin');
+    const [validate, setValidate] = useState(false);
+    const [secureEntry, setSecureEntry] = useState(true);
+    const [loading, setLoading] = useState(false);
+    const auth = useSelector((state) => state.login);
+    const [isSelected, setIsSelected] = useState(false);
+
+    const storeData = async () => {
+        try {
+            await AsyncStorage.setItem('isRemember', `${isSelected}`)
+        } catch (error) {
+            console.log('Async Storage set remember error ', error)
+        }
+    }
+
+    const onChange = () => setIsSelected(!isSelected);
+
+    const dispatch = useDispatch();
+
+    console.log('Login Reducers: ', auth)
+
+    const handleSubmit = () => {
+        dispatch(loginAction(email, password))
+        storeData()
+        setLoading(true)
+    }
+
+    useEffect(() => {
+        if (auth.error)
+            setLoading(false)
+    }, [auth])
+
+    const validateEmail = (text) => {
+        let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
+        if (reg.test(text) === false) {
+            setEmail(text)
+            setValidate(false)
+            return false;
+        }
+        else {
+            setEmail(text)
+            setValidate(true)
+            return true;
+        }
+    }
+
+    if (loading) {
+        return (
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                <ActivityIndicator size="large" />
+            </View>
+        )
+    }
+
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.header}>
@@ -19,26 +76,25 @@ const Login = () => {
                 <Text style={styles.textFooter}>Email</Text>
                 <View style={styles.action}>
                     <FontAwesome name="user-o" color='#85c2ed' size={20} />
-                    <TextInput placeholder="Please type your email" style={styles.textInput}  />
-                    {/* {validate === true ? */}
-                    <Animatable.View animation="bounceIn">
-                        <Feather name="check-circle" color="green" size={20} />
-                    </Animatable.View>
-                    {/* : null} */}
+                    <TextInput placeholder="Please type your email" style={styles.textInput} onChangeText={(email) => validateEmail(email)} />
+                    {validate === true ?
+                        <Animatable.View animation="bounceIn">
+                            <Feather name="check-circle" color="green" size={20} />
+                        </Animatable.View> : null}
                 </View>
 
                 <Text style={{ ...styles.textFooter, marginTop: 25 }}>Password</Text>
                 <View style={styles.action}>
                     <Feather name="lock" color='#85c2ed' size={20} />
-                    <TextInput placeholder="Please type password" secureTextEntry={secureEntry} style={styles.textInput} value={{}} />
+                    <TextInput placeholder="Please type password" secureTextEntry={secureEntry} style={styles.textInput} onChangeText={setPassword} value={password} />
                     <TouchableOpacity onPress={() => setSecureEntry(!secureEntry)}>
                         {secureEntry ? <Feather name="eye-off" color="#85c2ed" size={20} /> : <Feather name="eye" color="#85c2ed" size={20} />}
                     </TouchableOpacity>
                 </View>
                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                     <CheckBox
-                        // checked={isSelected}
-                        // onPress={() => onChange()}
+                        checked={isSelected}
+                        onPress={() => onChange()}
                         size={20}
                         center
                         title='Remember me'
@@ -48,11 +104,11 @@ const Login = () => {
                     />
                 </View>
                 <TouchableOpacity onPress={() => navigate('ForgotPassword')}>
-                    <Text style={{ color: '#009bd1', marginTop: 15 }}>Forgot password?</Text>
+                    <Text style={{ color: '#009bd1', marginTop: 15 }}>Forgot password</Text>
                 </TouchableOpacity>
 
                 <View style={styles.button}>
-                    <TouchableOpacity onPress={{}} style={styles.signIn}>
+                    <TouchableOpacity onPress={() => handleSubmit()} style={styles.signIn}>
                         <LinearGradient colors={['#5db8fe', '#39cff2']} style={styles.signIn}>
                             <Text style={{ ...styles.textSign, color: 'white' }}>Sign In</Text>
                         </LinearGradient>
@@ -63,7 +119,7 @@ const Login = () => {
                 </View>
             </Animatable.View >
         </SafeAreaView >
-    )
+    );
 }
 
 export default Login

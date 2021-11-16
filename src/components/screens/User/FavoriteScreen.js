@@ -1,110 +1,84 @@
 import { useNavigation } from '@react-navigation/core';
 import { useIsFocused } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, FlatList, Image, RefreshControl, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, FlatList, Image, RefreshControl, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useDispatch, useSelector } from 'react-redux';
 import { getUserFavorite, removeUserFavorite } from '../../../redux/actions';
-import { thousand } from '../../../ultils/commonFunctions';
+import { arrayIsEmpty, thousand } from '../../../ultils/commonFunctions';
 import HeaderCustom from '../../CustomComponents/HeaderCustom';
 
 const FavoriteScreen = () => {
+    const { navigate } = useNavigation();
     const dispatch = useDispatch();
-    const [data, setData] = useState([]);
+    const [data, setData] = useState(null);
 
-    const userFavoriteData = useSelector((state) => state.favorite);
-
-    const isFocused = useIsFocused();
+    const favoriteData = useSelector(state => state.favorite);
 
     useEffect(() => {
-        dispatch(getUserFavorite());
-        setData(userFavoriteData.data.response ? userFavoriteData.data.response.userCheckFavorite.favoritesData : null);
+        setData(favoriteData.data)
     }, [])
 
-    const { navigate } = useNavigation();
+    useEffect(() => {
+        setData(favoriteData.data)
+    }, [favoriteData])
 
-    async function removeUserFav(itemId) {
+    const onPressCartItem = (itemId) => {
         dispatch(removeUserFavorite(itemId));
-        const filter = data.filter(item => item._id !== itemId)
-        console.log('filterrrrrrrrrrrrrr', filter)
-        setData(filter)
-    }
-
-    async function getUserFav(itemId) {
-        dispatch(getUserFavorite());
-    }
-
-    useEffect(() => {
-        dispatch(getUserFavorite());
-        setData(userFavoriteData.data.response ? userFavoriteData.data.response.userCheckFavorite.favoritesData : data);
-    }, [isFocused])
-
-    useEffect(() => {
-        dispatch(getUserFavorite());
-        setData(userFavoriteData.data.response ? userFavoriteData.data.response.userCheckFavorite.favoritesData : data);
-    }, [data])
-
-    const [refreshing, setRefreshing] = useState(false);
-
-    const onRefresh = async () => {
-        setRefreshing(true);
-        dispatch(getUserFavorite());
-        setData(userFavoriteData.data.response ? userFavoriteData.data.response.userCheckFavorite.favoritesData : data);
-        setTimeout(() => {
-            setRefreshing(false)
-        }, 2000);
-    }
-
-    const onPressCartItem = async (itemId) => {
-        await removeUserFav(itemId);
-        await onRefresh();
     }
 
     return (
-        <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
+        <View style={{ flex: 1, backgroundColor: 'white' }}>
             <HeaderCustom title={'Favorite'} />
-            <FlatList
-                refreshControl={
-                    <RefreshControl
-                        refreshing={refreshing}
-                        onRefresh={onRefresh}
-                        tintColor="blue" />
-                }
-                data={data}
-                keyExtractor={item => item._id}
-                onEndReachedThreshold={.4}
-                ListFooterComponent={<View style={{ height: 15 }} />}
-                renderItem={({ item, index }) => (
-                    <View style={{ ...styles.card, marginBottom: 5 }}>
-                        <View style={{ width: '85%', height: '85%', flexDirection: 'row' }}>
-                            <TouchableOpacity style={styles.wrapper} onPress={() => navigate('FoodDetailsScreen', {
-                                id: item._id,
-                                url: item.url,
-                                weight: item.weight,
-                                price: item.price,
-                                name: item.name,
-                                nation: item.nation,
-                                status: item.status,
-                                description: item.description
-                            })}>
-                                <Image source={{ uri: item.url }} style={styles.image} />
-                            </TouchableOpacity>
-                            <View style={styles.desc}>
-                                <Text style={{ color: 'gray', fontSize: 12, fontStyle: 'italic' }}>{item.weight}</Text>
-                                <Text style={{ fontWeight: 'bold' }}>{thousand(item.price)}VNĐ</Text>
-                                <Text numberOfLines={2} style={{ color: '#4dc2f8', fontWeight: 'bold', fontSize: 16 }}>{item.name}</Text>
-                                <Text style={{ color: 'gray', fontSize: 12 }}>{item.nation}</Text>
-                                <TouchableOpacity onPress={() => onPressCartItem(item._id)}>
-                                    <Text>Xoóa</Text>
-                                </TouchableOpacity>
-                                <MaterialCommunityIcons name="heart" color='#4dc2f8' size={18} />
+            {!arrayIsEmpty(data) ?
+                <ScrollView
+                    horizontal={false}
+                    showsHorizontalScrollIndicator={false}
+                    showsVerticalScrollIndicator={false}
+                    // ref={props.reff}
+                    // style={props.horizontal ? { paddingVertical: '3%' } : { marginBottom: 30 }}
+                    contentContainerStyle={
+                        {
+                            paddingBottom: '6%',
+                        }}
+                >
+                    {data.map((item, index) => {
+                        return (
+                            <View key={item._id} style={{ ...styles.card, marginBottom: 5 }}>
+                                <View style={{ width: '85%', height: '85%', flexDirection: 'row' }}>
+                                    <TouchableOpacity style={styles.wrapper} onPress={() => navigate('FoodDetail', {
+                                        id: item._id,
+                                        url: item.url,
+                                        weight: item.weight,
+                                        price: item.price,
+                                        name: item.name,
+                                        nation: item.nation,
+                                        status: item.status,
+                                        description: item.description
+                                    })}>
+                                        <Image source={{ uri: item.url }} style={styles.image} />
+                                    </TouchableOpacity>
+                                    <View style={styles.desc}>
+                                        <Text style={{ color: 'gray', fontSize: 12, fontStyle: 'italic' }}>{item.weight}</Text>
+                                        <Text style={{ fontWeight: 'bold' }}>{thousand(item.price)}VNĐ</Text>
+                                        <Text numberOfLines={2} style={{ color: '#4dc2f8', fontWeight: 'bold', fontSize: 16 }}>{item.name}</Text>
+                                        <Text style={{ color: 'gray', fontSize: 12 }}>{item.nation}</Text>
+                                        <TouchableOpacity onPress={() => onPressCartItem(item._id)}>
+                                            <Text>Xoóa</Text>
+                                        </TouchableOpacity>
+                                        <MaterialCommunityIcons name="heart" color='#4dc2f8' size={18} />
+                                    </View>
+                                </View>
                             </View>
-                        </View>
-                    </View>
-                )
-                }
-            />
-        </SafeAreaView>
+                        )
+                    })}
+                </ScrollView>
+                :
+                <View>
+                    <Text>Empty Favorite</Text>
+                </View>
+            }
+        </View>
     )
 }
 

@@ -8,22 +8,10 @@ const initialState = {
 const favoriteReducers = (state = initialState, action) => {
     try {
         switch (action.type) {
-            case SET_USER_FAVORITE_SUCCESS:
-                return {
-                    ...state,
-                    data: action,
-                    loading: false
-                }
-            case SET_USER_FAVORITE_FAIL:
-                return {
-                    ...state,
-                    data: action,
-                    loading: true
-                }
             case GET_USER_FAVORITE_SUCCESS:
                 return {
                     ...state,
-                    data: action,
+                    data: action.response.userCheckFavorite.favoritesData,
                     loading: false
                 }
             case GET_USER_FAVORITE_FAIL:
@@ -32,15 +20,27 @@ const favoriteReducers = (state = initialState, action) => {
                     data: action,
                     loading: true
                 }
+            case SET_USER_FAVORITE_SUCCESS:
+                return {
+                    data: state.data.concat(action.response.foodCheck),
+                    loading: false
+                }
+            case SET_USER_FAVORITE_FAIL:
+                return {
+                    ...state,
+                    error: action.response.message,
+                    loading: true
+                }
             case REMOVE_USER_FAVORITE_SUCCESS:
-                console.log('action', action)
-                const newList = action.response.filter(item => item._id !== action.response.favorite._id)
-                console.log('newwwwwwwww', newList)
-                return newList
+                return {
+                    data: state.data.filter(item => item._id !== action.response.favorite._id),
+                    loading: false
+                }
             case REMOVE_USER_FAVORITE_FAIL:
                 return {
                     ...state,
-                    data: action,
+                    data: [...data],
+                    error: action.response.message,
                     loading: true
                 }
             default:
@@ -50,6 +50,7 @@ const favoriteReducers = (state = initialState, action) => {
         }
     } catch (error) {
         console.log('Favorite Reducers Error', error)
+        return error
     }
 }
 

@@ -18,7 +18,8 @@ function* getUserFavorite() {
             yield put({ type: GET_USER_FAVORITE_FAIL, response: response })
         }
     } catch (error) {
-        console.log(error)
+        console.log('Get User favorite Error: ', error)
+        return error
     }
 
 }
@@ -41,7 +42,7 @@ function* removeUserFavorite(itemId) {
             yield put({ type: REMOVE_USER_FAVORITE_FAIL, response: response });
         }
     } catch (error) {
-        console.log(error)
+        console.log('Remove User favorite Error: ', error)
         return error
     }
 }
@@ -64,7 +65,7 @@ function* setUserFavorite(itemId) {
             yield put({ type: SET_USER_FAVORITE_FAIL, response: response })
 
     } catch (error) {
-        console.log(error)
+        console.log('Set User favorite Error: ', error)
         return error
     }
 

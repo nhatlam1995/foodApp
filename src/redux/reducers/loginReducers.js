@@ -30,7 +30,6 @@ const loginReducers = (state = initialState, action) => {
             case DID_LOGIN_ACTION:
                 return 0;
             case LOG_OUT:
-                console.log('Logout')
                 AsyncStorage.removeItem('token')
                 AsyncStorage.removeItem('isRemember')
                 return {

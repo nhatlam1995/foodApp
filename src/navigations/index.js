@@ -1,10 +1,11 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createStackNavigator } from "@react-navigation/stack";
-import React from 'react';
+import React, { useEffect } from 'react';
 import { View } from "react-native";
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import { useSelector } from "react-redux";
 import CartScreen from "../components/screens/User/CartScreen";
 import FavoriteScreen from "../components/screens/User/FavoriteScreen";
 import FoodDetailScreen from "../components/screens/User/FoodDetailScreen";
@@ -68,6 +69,12 @@ function ProfileStack() {
 }
 
 export default function MyTabs() {
+    const data = useSelector(state => state.cart);
+    const quantity = data.reduce((quantity, item) => quantity + item.quantity, 0);
+
+    useEffect(() => {
+    }, [quantity])
+
     return (
         <Tab.Navigator
             initialRouteName='Home'
@@ -95,7 +102,7 @@ export default function MyTabs() {
             <Tab.Screen name="Cart" component={CartStack}
                 options={{
                     tabBarLabel: 'Cart',
-                    // tabBarBadge: quantity,
+                    tabBarBadge: quantity,
                     tabBarBadgeStyle: { backgroundColor: '#4dc2f8', color: 'white', left: 5, top: -1, justifyContent: 'center', alignItems: 'center', fontSize: 12 },
                     tabBarIcon: ({ color, size }) => (
                         <MaterialCommunityIcons name="cart-outline" color={color} size={32} />

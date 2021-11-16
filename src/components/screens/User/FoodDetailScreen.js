@@ -1,16 +1,18 @@
 import React, { useEffect, useState } from 'react'
 import { ImageBackground, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { useNavigation } from '@react-navigation/core';
-import { addToCartAction, getUserFavorite, setUserFavorite } from '../../../redux/actions';
+import { addToCartAction, getUserFavorite, removeUserFavorite, setUserFavorite } from '../../../redux/actions';
 import { useDispatch, useSelector } from 'react-redux';
 import LinearGradient from 'react-native-linear-gradient';
 import * as Animatable from 'react-native-animatable';
 import HeaderCustom from '../../CustomComponents/HeaderCustom';
 import { thousand } from '../../../ultils/commonFunctions';
+import { showToast } from '../../CustomComponents/Toast';
 
 const FoodDetailsScreen = ({ route }) => {
     const { id, url, weight, price, name, nation, status, description } = route.params;
     const [item, setItem] = useState()
+    const userFavorite = useSelector((state) => state.favorite)
 
     const dispatch = useDispatch();
 
@@ -18,14 +20,16 @@ const FoodDetailsScreen = ({ route }) => {
 
     const [flag, setFlag] = useState(false)
 
+    const cartData = useSelector(state => state.cart);
+    const quantity = cartData.reduce((quantity, item) => quantity + item.quantity, 0);
+
     useEffect(() => {
         setItem({ id, url, weight, price, name, nation, status, description })
-        console.log(item)
     }, [route.params])
 
-    // useEffect(() => {
-    //     setData(userFavorite.data.response.userCheckFavorite.favoritesData.map(ele => ele._id));
-    // }, [userFavorite])
+    useEffect(() => {
+        setData(userFavorite.data.map(ele => ele._id));
+    }, [userFavorite])
 
     useEffect(() => {
         if (data.includes(id)) {
@@ -41,21 +45,28 @@ const FoodDetailsScreen = ({ route }) => {
     const { goBack } = useNavigation();
 
     const onPressCart = () => {
+        showToast(`You added ${quantity + 1} into cart`)
         const action = addToCartAction(item)
         dispatch(action)
     }
 
-    const onPressFavorite = (itemId) => {
-        dispatch(setUserFavorite(itemId))
+    const onPress = (itemId) => {
+        if (flag === true) {
+            dispatch(removeUserFavorite(itemId));
+            setFlag(false)
+        }
+        else {
+            dispatch(setUserFavorite(itemId))
+            setFlag(true)
+        }
     }
 
     return (
         <View style={{ flex: 1 }}>
             <ImageBackground source={{ uri: url }} style={{ flex: 1 }} imageStyle={{ height: 350, resizeMode: 'stretch' }}>
                 <HeaderCustom isLeftRight onPressLeft={() => goBack()} onPressCart={() => { onPressCart() }} onPressFavorite={() => {
-                    onPressFavorite(id);
-                    setFlag(!flag)
-                }} flag={flag} />
+                    onPress(id)
+                }} flag={flag} name={name} />
                 <View style={{ flex: 1.5 }} />
                 <Animatable.View animation="fadeInUpBig" style={{ flex: 2, borderTopLeftRadius: 30, borderTopRightRadius: 30, backgroundColor: 'white', alignItems: 'center' }}>
                     <View style={{ flex: 8, width: '94%', justifyContent: 'center' }}>
@@ -72,7 +83,7 @@ const FoodDetailsScreen = ({ route }) => {
                             </View>
                         </ScrollView>
                     </View>
-                    <TouchableOpacity onPress={() => dispatch(addToCartAction({ id, url, weight, price, name, nation, status, description }))} style={{ flex: 1, width: '94%', marginVertical: 15, }}>
+                    <TouchableOpacity onPress={() => onPressCart()} style={{ flex: 1, width: '94%', marginVertical: 15, }}>
                         <LinearGradient colors={['#5db8fe', '#39cff2']} style={{ width: '100%', height: '100%', borderRadius: 20, justifyContent: 'center', alignItems: 'center' }}>
                             <Text style={{ fontWeight: 'bold', color: 'white', fontSize: 18 }}>Add to cart</Text>
                         </LinearGradient>

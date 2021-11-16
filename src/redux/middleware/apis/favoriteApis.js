@@ -46,7 +46,6 @@ export async function Set_User_Favorite(itemId) {
         },
     }).then(response => response.json())
         .then(result => {
-            console.log('r', result)
             return result
         })
         .catch((error) => {

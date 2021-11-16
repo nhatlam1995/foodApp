@@ -25,7 +25,7 @@ const HeaderCustom = (props) => {
                         <View style={{ flexDirection: 'row' }}>
                             <TouchableOpacity style={{ ...styles.button, marginHorizontal: 5 }} onPress={() => {
                                 props.onPressFavorite()
-                                props.flag === false ? showToast('You liked this food') : showToast('You unliked this food')
+                                props.flag === false ? showToast(`You liked this ${props.name} `) : showToast(`You unliked this ${props.name}`)
                             }}>
                                 {props.flag === false ? <MaterialCommunityIcons name="heart-outline" color='#4dc2f8' size={18} /> : <MaterialCommunityIcons name="heart" color='#4dc2f8' size={18} />}
                             </TouchableOpacity>

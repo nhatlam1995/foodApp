@@ -4,7 +4,7 @@ import { ActivityIndicator, FlatList, Image, SafeAreaView, StyleSheet, Text, Tou
 import { Badge } from 'react-native-elements/dist/badge/Badge'
 import { useDispatch, useSelector } from 'react-redux'
 import { sizes, colors, fonts } from '../../../assets/strings'
-import { getCategory, getUserFavorite } from '../../../redux/actions'
+import { getCategory, getUserFavorite, getUserInfo } from '../../../redux/actions'
 import { categoryData } from '../../../redux/FakeData'
 import { thousand } from '../../../ultils/commonFunctions'
 import HeaderCustom from '../../CustomComponents/HeaderCustom'
@@ -12,16 +12,24 @@ import HeaderCustom from '../../CustomComponents/HeaderCustom'
 const HomeScreen = () => {
     const dispatch = useDispatch();
 
-    useEffect(() => {
-        dispatch(getCategory());
-        dispatch(getUserFavorite());
-    }, [])
-
     const homeData = useSelector((state) => state.home);
-    const favoriteData = useSelector((state) => state.favorite);
+    const favoritesData = useSelector((state) => state.favorite)
+    const userData = useSelector((state) => state.user);
 
     console.log('homeData Check: ', homeData)
-    console.log('favorite Check: ', favoriteData)
+    console.log('User Data: ', userData)
+    console.log('favorite Check: ', favoritesData)
+
+    useEffect(() => {
+        const getCategoryAction = getCategory();
+        const getUserFavoriteAction = getUserFavorite();
+        const getUserInfoAction = getUserInfo();
+        dispatch(getCategoryAction);
+        dispatch(getUserFavoriteAction);
+        dispatch(getUserInfoAction);
+    }, [])
+
+
 
     const [selectedId, setSelectedID] = useState(0);
 
@@ -119,7 +127,7 @@ const HomeScreen = () => {
         }
         return (
             <FlatList
-                data={homeData.data.response ? homeData.data.response.categoryLists[selectedId].categoryData : null}
+                data={homeData.data !== [] ? homeData.data.response.categoryLists[selectedId].categoryData : null}
                 showsVerticalScrollIndicator={false}
                 contentContainerStyle={{ width: '100%', alignItems: 'center' }}
                 renderItem={renderItem}

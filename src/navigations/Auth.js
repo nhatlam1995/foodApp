@@ -81,8 +81,6 @@ export default function Auth() {
         )
     }
 
-    console.log(auth)
-
     return (
         <SafeAreaView style={{ flex: 1 }}>
             <View style={{ flex: 1 }}>

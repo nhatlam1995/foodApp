@@ -22,6 +22,7 @@ const favoriteReducers = (state = initialState, action) => {
                 }
             case SET_USER_FAVORITE_SUCCESS:
                 return {
+                    ...state,
                     data: state.data.concat(action.response.foodCheck),
                     loading: false
                 }
@@ -33,6 +34,7 @@ const favoriteReducers = (state = initialState, action) => {
                 }
             case REMOVE_USER_FAVORITE_SUCCESS:
                 return {
+                    ...state,
                     data: state.data.filter(item => item._id !== action.response.favorite._id),
                     loading: false
                 }

@@ -53,11 +53,9 @@ const FoodDetailsScreen = ({ route }) => {
     const onPress = (itemId) => {
         if (flag === true) {
             dispatch(removeUserFavorite(itemId));
-            setFlag(false)
         }
         else {
             dispatch(setUserFavorite(itemId))
-            setFlag(true)
         }
     }
 

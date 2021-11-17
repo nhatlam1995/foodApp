@@ -13,12 +13,6 @@ const HomeScreen = () => {
     const dispatch = useDispatch();
 
     const homeData = useSelector((state) => state.home);
-    const favoritesData = useSelector((state) => state.favorite)
-    const userData = useSelector((state) => state.user);
-
-    console.log('homeData Check: ', homeData)
-    console.log('User Data: ', userData)
-    console.log('favorite Check: ', favoritesData)
 
     useEffect(() => {
         const getCategoryAction = getCategory();
@@ -28,8 +22,6 @@ const HomeScreen = () => {
         dispatch(getUserFavoriteAction);
         dispatch(getUserInfoAction);
     }, [])
-
-
 
     const [selectedId, setSelectedID] = useState(0);
 

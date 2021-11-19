@@ -10,6 +10,7 @@ import Swipeable from 'react-native-gesture-handler/Swipeable';
 import { SwipeableFlatList, SwipeableQuickActionButton, SwipeableQuickActions } from 'react-native-swipe-list'
 import HeaderCustom from '../../CustomComponents/HeaderCustom'
 import { arrayIsEmpty, thousand } from '../../../ultils/commonFunctions'
+import { colors } from '../../../assets/strings'
 
 export const windowWidth = Dimensions.get('window').width;
 export const windowHeight = Dimensions.get('window').height;
@@ -49,8 +50,10 @@ const CartScreen = () => {
                         keyExtractor={item => item.id}
                         onEndReachedThreshold={.4}
                         renderRightActions={({ item }) => (
-                            <SwipeableQuickActions style={{ justifyContent: 'center', alignItems: 'center', paddingHorizontal: 20, marginRight: 15, marginTop: 20, borderRadius: 15, backgroundColor: '#4dc2f8', height: 140, alignSelf: 'center' }}>
-                                <SwipeableQuickActionButton onPress={() => onPressCartItem(item)} text="Remove" textStyle={{ color: 'white', fontWeight: 'bold', fontSize: 16 }} style={{ width: '100%', height: '100%' }} />
+                            <SwipeableQuickActions style={styles.swipeDeleteContainer}>
+                                <SwipeableQuickActionButton onPress={() => onPressCartItem(item)}
+                                    text="Remove" textStyle={{ color: 'white', fontWeight: 'bold', fontSize: 16 }}
+                                    style={{ width: '100%', height: '100%' }} />
                             </SwipeableQuickActions>
                         )}
                         ListFooterComponent={<View style={{ height: 15 }} />}
@@ -72,21 +75,21 @@ const CartScreen = () => {
                                     <View style={styles.desc}>
                                         <Text style={{ color: 'gray', fontSize: 12, fontStyle: 'italic' }}>{item.weight}</Text>
                                         <Text style={{ fontWeight: 'bold' }}>{thousand(item.price)}VNĐ</Text>
-                                        <Text numberOfLines={2} style={{ color: '#4dc2f8', fontWeight: 'bold', fontSize: 16 }}>{item.name}</Text>
+                                        <Text numberOfLines={2} style={{ color: colors.accent, fontWeight: 'bold', fontSize: 16 }}>{item.name}</Text>
                                         <Text style={{ color: 'gray', fontSize: 12 }}>{item.nation}</Text>
                                         <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
                                             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                                                 {item.quantity === 1 ? <TouchableOpacity onPress={() => {
                                                     setFlag(!flag)
                                                     onPressCartItem(item)
-                                                }} style={{ width: 23, height: 23, borderRadius: 5, backgroundColor: '#4dc2f8', justifyContent: 'center', alignItems: 'center' }}>
+                                                }} style={styles.decreaseButton}>
                                                     <MaterialCommunityIcons size={18} name="cart-remove" color="white" />
                                                 </TouchableOpacity>
                                                     :
                                                     <TouchableOpacity onPress={() => {
                                                         dispatch(removeItemFromCartAction(item))
                                                         setFlag(!flag)
-                                                    }} style={{ width: 23, height: 23, borderRadius: 5, backgroundColor: '#4dc2f8', justifyContent: 'center', alignItems: 'center' }}>
+                                                    }} style={styles.decreaseButton}>
                                                         <Text style={{ color: 'white', fontWeight: 'bold', fontSize: 15, bottom: 1 }}>-</Text>
                                                     </TouchableOpacity>
                                                 }
@@ -94,13 +97,13 @@ const CartScreen = () => {
                                                 <TouchableOpacity onPress={() => {
                                                     dispatch(addToCartAction(item))
                                                     setFlag(!flag)
-                                                }} style={{ width: 23, height: 23, borderRadius: 5, backgroundColor: '#4dc2f8', justifyContent: 'center', alignItems: 'center' }}>
+                                                }} style={styles.decreaseButton}>
                                                     <Text style={{ color: 'white', fontWeight: 'bold', fontSize: 15 }}>+</Text>
                                                 </TouchableOpacity>
                                             </View>
                                             <View style={{ flexDirection: 'row' }}>
-                                                <Text style={{ color: '#4dc2f8', fontWeight: 'bold', fontSize: 15 }}>Total: </Text>
-                                                <Text style={{ color: '#4dc2f8', fontWeight: 'bold', fontSize: 15 }}>{thousand(item.price * item.quantity)}</Text>
+                                                <Text style={styles.totalTextItem}>Total: </Text>
+                                                <Text style={styles.totalTextItem}>{thousand(item.price * item.quantity)}</Text>
                                             </View>
                                         </View>
                                     </View>
@@ -112,22 +115,10 @@ const CartScreen = () => {
                 </View>
                 :
                 <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                    <Text style={{ fontSize: 20, color: '#4dc2f8' }}>Your cart is empty!</Text>
-                    <MaterialCommunityIcons name="cart-arrow-down" size={60} color='#4dc2f8' style={{ marginVertical: 15 }} />
-                    <TouchableOpacity onPress={() => jumpTo('Home')} style={{
-                        width: '30%',
-                        height: 50,
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        borderRadius: 10
-                    }}>
-                        <LinearGradient colors={['#5db8fe', '#39cff2']} style={{
-                            width: '100%',
-                            height: 50,
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            borderRadius: 10
-                        }}>
+                    <Text style={{ fontSize: 20, color: colors.accent }}>Your cart is empty!</Text>
+                    <MaterialCommunityIcons name="cart-arrow-down" size={60} color={colors.accent} style={{ marginVertical: 15 }} />
+                    <TouchableOpacity onPress={() => jumpTo('Home')} style={styles.jumpToHomeButton}>
+                        <LinearGradient colors={['#5db8fe', '#39cff2']} style={styles.shopButton}>
                             <Text style={{ fontSize: 18, fontWeight: 'bold', color: 'white' }}>Shop now</Text>
                         </LinearGradient>
                     </TouchableOpacity>
@@ -135,23 +126,21 @@ const CartScreen = () => {
             }
             {quantity !== 0 &&
                 <View style={{ justifyContent: 'center', height: 130, alignItems: 'center' }}>
-                    <LinearGradient colors={['#5db8fe', '#39cff2']} style={{
-                        width: '94%', height: '80%', borderColor: '#4dc2f8', justifyContent: 'space-around', alignItems: 'center', borderRadius: 10
-                    }}>
+                    <LinearGradient colors={['#5db8fe', '#39cff2']} style={styles.checkOutContainer}>
                         <View style={{ width: '70%' }}>
                             <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
-                                <View style={{ flexDirection: 'row', width: '50%', justifyContent: 'center' }}>
-                                    <Text style={{ textAlign: 'center', color: 'white', fontSize: 16, textDecorationLine: 'underline' }}>Products: </Text>
-                                    <Text style={{ textAlign: 'center', color: 'white', fontWeight: 'bold', fontSize: 16 }}>{quantity}</Text>
+                                <View style={styles.rowText}>
+                                    <Text style={styles.textUnderline}>Products: </Text>
+                                    <Text style={styles.textNormal}>{quantity}</Text>
                                 </View>
-                                <View style={{ flexDirection: 'row', width: '50%', justifyContent: 'center' }}>
-                                    <Text style={{ textAlign: 'center', color: 'white', fontSize: 16, textDecorationLine: 'underline' }}>Point: </Text>
+                                <View style={styles.rowText}>
+                                    <Text style={styles.textUnderline}>Point: </Text>
                                     <Text style={{ textAlign: 'center', color: 'white', fontWeight: 'bold', fontSize: 16 }}>{thousand(total / 1000)}</Text>
                                 </View>
                             </View>
                         </View>
-                        <TouchableOpacity onPress={() => { onClickCheckOut() }} style={{ width: '70%', height: 40, justifyContent: 'center', alignItems: 'center', alignSelf: 'center', borderRadius: 10, backgroundColor: 'white' }}>
-                            <Text style={{ fontSize: 16, fontWeight: 'bold', color: '#4dc2f8' }}>Total: {thousand(total)}</Text>
+                        <TouchableOpacity onPress={() => { onClickCheckOut() }} style={styles.checkOutButton}>
+                            <Text style={styles.textNormal}>Total: {thousand(total)}</Text>
                         </TouchableOpacity>
                     </LinearGradient>
                 </View>
@@ -224,4 +213,76 @@ const styles = StyleSheet.create({
         width: 100,
         height: 80,
     },
+    swipeDeleteContainer: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingHorizontal: 20,
+        marginRight: 15,
+        marginTop: 20,
+        borderRadius: 15,
+        backgroundColor: colors.accent,
+        height: 140,
+        alignSelf: 'center'
+    },
+    decreaseButton: {
+        width: 23,
+        height: 23,
+        borderRadius: 5,
+        backgroundColor: colors.accent,
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    totalTextItem: {
+        color: colors.accent,
+        fontWeight: 'bold',
+        fontSize: 15
+    },
+    shopButton: {
+        width: '100%',
+        height: 50,
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: 10
+    },
+    jumpToHomeButton: {
+        width: '30%',
+        height: 50,
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: 10
+    },
+    checkOutContainer: {
+        width: '94%',
+        height: '80%',
+        borderColor: colors.accent,
+        justifyContent: 'space-around',
+        alignItems: 'center',
+        borderRadius: 10
+    },
+    checkOutButton: {
+        width: '70%',
+        height: 40,
+        justifyContent: 'center',
+        alignItems: 'center',
+        alignSelf: 'center',
+        borderRadius: 10,
+        backgroundColor: 'white'
+    },
+    rowText: {
+        flexDirection: 'row',
+        width: '50%',
+        justifyContent: 'center'
+    },
+    textUnderline: {
+        textAlign: 'center',
+        color: 'white',
+        fontSize: 16,
+        textDecorationLine: 'underline'
+    },
+    textNormal: {
+        textAlign: 'center',
+        color: 'white',
+        fontWeight: 'bold',
+        fontSize: 16
+    }
 })

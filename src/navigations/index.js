@@ -1,7 +1,7 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createStackNavigator } from "@react-navigation/stack";
 import React, { useEffect } from 'react';
-import { View } from "react-native";
+import { colors } from '../assets/strings'
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
@@ -80,7 +80,7 @@ export default function MyTabs() {
             initialRouteName='Home'
             screenOptions={{
                 headerShown: false,
-                tabBarActiveTintColor: '#4dc2f8',
+                tabBarActiveTintColor: colors.accent,
                 tabBarInactiveTintColor: 'grey'
             }}>
             <Tab.Screen name="Favorites" component={FavoritesStack}
@@ -103,7 +103,7 @@ export default function MyTabs() {
                 options={{
                     tabBarLabel: 'Cart',
                     tabBarBadge: quantity,
-                    tabBarBadgeStyle: { backgroundColor: '#4dc2f8', color: 'white', left: 5, top: -1, justifyContent: 'center', alignItems: 'center', fontSize: 12 },
+                    tabBarBadgeStyle: { backgroundColor: colors.accent, color: 'white', left: 5, top: -1, justifyContent: 'center', alignItems: 'center', fontSize: 12 },
                     tabBarIcon: ({ color, size }) => (
                         <MaterialCommunityIcons name="cart-outline" color={color} size={32} />
                     ),

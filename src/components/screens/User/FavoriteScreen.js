@@ -1,10 +1,11 @@
 import { useNavigation } from '@react-navigation/core';
-import { useIsFocused } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, FlatList, Image, RefreshControl, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { RefreshControl } from 'react-native';
+import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useDispatch, useSelector } from 'react-redux';
+import { colors } from '../../../assets/strings';
 import { getUserFavorite, removeUserFavorite } from '../../../redux/actions';
 import { arrayIsEmpty, thousand } from '../../../ultils/commonFunctions';
 import HeaderCustom from '../../CustomComponents/HeaderCustom';
@@ -16,6 +17,7 @@ const FavoriteScreen = () => {
     const favoriteData = useSelector(state => state.favorite);
 
     useEffect(() => {
+        dispatch(getUserFavorite());
         setData(favoriteData.data)
     }, [])
 
@@ -27,6 +29,17 @@ const FavoriteScreen = () => {
         dispatch(removeUserFavorite(itemId));
     }
 
+    const [refreshing, setRefreshing] = useState(false);
+
+    const onRefresh = async () => {
+        setRefreshing(true);
+        dispatch(getUserFavorite());
+        setTimeout(() => {
+            setRefreshing(false)
+            setData(favoriteData.data)
+        }, 2000);
+    }
+
     return (
         <View style={{ flex: 1, backgroundColor: 'white' }}>
             <HeaderCustom title={'Favorite'} />
@@ -35,12 +48,13 @@ const FavoriteScreen = () => {
                     horizontal={false}
                     showsHorizontalScrollIndicator={false}
                     showsVerticalScrollIndicator={false}
-                    // ref={props.reff}
-                    // style={props.horizontal ? { paddingVertical: '3%' } : { marginBottom: 30 }}
-                    contentContainerStyle={
-                        {
-                            paddingBottom: '6%',
-                        }}
+                    contentContainerStyle={{ paddingBottom: '6%' }}
+                    refreshControl={
+                        <RefreshControl
+                            refreshing={refreshing}
+                            onRefresh={onRefresh}
+                            tintColor="blue" />
+                    }
                 >
                     {data.map((item, index) => {
                         return (
@@ -61,10 +75,10 @@ const FavoriteScreen = () => {
                                     <View style={styles.desc}>
                                         <Text style={{ color: 'gray', fontSize: 12, fontStyle: 'italic' }}>{item.weight}</Text>
                                         <Text style={{ fontWeight: 'bold' }}>{thousand(item.price)}VNĐ</Text>
-                                        <Text numberOfLines={2} style={{ color: '#4dc2f8', fontWeight: 'bold', fontSize: 16 }}>{item.name}</Text>
+                                        <Text numberOfLines={2} style={{ color: colors.accent, fontWeight: 'bold', fontSize: 16 }}>{item.name}</Text>
                                         <Text style={{ color: 'gray', fontSize: 12 }}>{item.nation}</Text>
                                         <TouchableOpacity onPress={() => onPressCartItem(item._id)}>
-                                            <MaterialCommunityIcons name="heart" color='#4dc2f8' size={18} />
+                                            <MaterialCommunityIcons name="heart" color={colors.accent} size={18} />
                                         </TouchableOpacity>
                                     </View>
                                 </View>
@@ -74,10 +88,10 @@ const FavoriteScreen = () => {
                 </ScrollView>
                 :
                 <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                    <Text style={{ fontSize: 20, color: '#4dc2f8' }}>Your Favorite data is empty!</Text>
-                    <MaterialCommunityIcons name="heart-outline" size={60} color='#4dc2f8' style={{ marginVertical: 15 }} />
+                    <Text style={{ fontSize: 20, color: colors.accent }}>Your Favorite data is empty!</Text>
+                    <MaterialCommunityIcons name="heart-outline" size={60} color={colors.accent} style={{ marginVertical: 15 }} />
                     <TouchableOpacity onPress={() => jumpTo('Home')} style={{
-                        width: '30%',
+                        width: '35%',
                         height: 50,
                         justifyContent: 'center',
                         alignItems: 'center',
@@ -90,7 +104,7 @@ const FavoriteScreen = () => {
                             alignItems: 'center',
                             borderRadius: 10
                         }}>
-                            <Text style={{ fontSize: 18, fontWeight: 'bold', color: 'white' }}>Go Shopping</Text>
+                            <Text style={{ fontSize: 18, fontWeight: 'bold', color: 'white' }}>Let's started</Text>
                         </LinearGradient>
                     </TouchableOpacity>
                 </View>
@@ -160,6 +174,6 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         width: 100,
-        height: 80,
-    },
+        height: 80
+    }
 })

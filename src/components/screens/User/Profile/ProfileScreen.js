@@ -18,7 +18,7 @@ const ProfileScreen = () => {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        const action = dispatch(getUserInfo());
+        dispatch(getUserInfo());
     }, [userData])
 
     const userData = useSelector((state) => state.user);
@@ -55,19 +55,19 @@ const ProfileScreen = () => {
                 containerStyle={{ backgroundColor: 'rgba(0.5, 0.25, 0, 0.2)' }}
             >
                 <View style={{ width: '100%', height: '100%' }}>
-                    <LinearGradient colors={['#5db8fe', '#39cff2']} style={{ width: '100%', height: '100%', borderTopLeftRadius: 20, borderTopRightRadius: 20 }}>
-                        <View style={{ justifyContent: 'space-between', alignItems: 'center', flexDirection: 'row', borderBottomColor: 'white', borderBottomWidth: 1, paddingVertical: 10 }}>
+                    <LinearGradient colors={['#5db8fe', '#39cff2']} style={styles.modalContainer}>
+                        <View style={styles.modalWrapper}>
                             <View style={{ width: 30, height: 30, justifyContent: 'center', alignItems: 'center' }} />
                             <Text style={{ fontSize: 18, color: 'white', fontWeight: 'bold' }}>Edit Profile</Text>
                             <TouchableOpacity onPress={() => setVisible(false)} style={{ width: 30, height: 30, justifyContent: 'center', alignItems: 'center' }}>
                                 <Ionicons name="close-outline" color='white' size={20} />
                             </TouchableOpacity>
                         </View>
-                        <TouchableOpacity style={{ width: '90%', alignSelf: 'center', height: 50, justifyContent: 'center' }}>
+                        <TouchableOpacity style={styles.modalButton}>
                             <Text style={{ color: 'white', fontSize: 16 }}>Change avatar</Text>
                         </TouchableOpacity>
                         <View style={{ borderBottomWidth: 1, borderBottomColor: 'white' }} />
-                        <TouchableOpacity style={{ width: '90%', alignSelf: 'center', height: 50, justifyContent: 'center' }}>
+                        <TouchableOpacity style={styles.modalButton}>
                             <Text style={{ color: 'white', fontSize: 16 }}>Edit profile</Text>
                         </TouchableOpacity>
                     </LinearGradient>
@@ -118,7 +118,7 @@ const ProfileScreen = () => {
                         }]}>
                             {userData.data.response ? userData.data.response.user.fullname : null}
                             <TouchableRipple onPress={() => { }}>
-                                <AntDesign name="edit" size={20} color={'#4dc2f8'} />
+                                <AntDesign name="edit" size={20} color={colors.accent} />
                             </TouchableRipple>
                         </Title>
                     </View>
@@ -255,4 +255,24 @@ const styles = StyleSheet.create({
         width: '50%',
         alignItems: 'center'
     },
+    modalButton: {
+        width: '90%',
+        alignSelf: 'center',
+        height: 50,
+        justifyContent: 'center'
+    },
+    modalWrapper: {
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        flexDirection: 'row',
+        borderBottomColor: 'white',
+        borderBottomWidth: 1,
+        paddingVertical: 10
+    },
+    modalContainer: {
+        width: '100%',
+        height: '100%',
+        borderTopLeftRadius: 20,
+        borderTopRightRadius: 20
+    }
 });

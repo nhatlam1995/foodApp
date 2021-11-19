@@ -9,6 +9,7 @@ import Feather from 'react-native-vector-icons/Feather';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { useDispatch, useSelector } from 'react-redux';
 import { loginAction } from '../../../redux/actions';
+import { colors } from '../../../assets/strings'
 
 const Login = () => {
     const { navigate } = useNavigation();
@@ -113,8 +114,8 @@ const Login = () => {
                             <Text style={{ ...styles.textSign, color: 'white' }}>Sign In</Text>
                         </LinearGradient>
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={() => navigate('RegisterScreen')} style={{ ...styles.signIn, borderColor: '#4dc2f8', borderWidth: 1, marginTop: 15 }}>
-                        <Text style={{ ...styles.textSign, color: '#4dc2f8' }}>Sign Up</Text>
+                    <TouchableOpacity onPress={() => navigate('RegisterScreen')} style={{ ...styles.signIn, borderColor: colors.accent, borderWidth: 1, marginTop: 15 }}>
+                        <Text style={{ ...styles.textSign, color: colors.accent }}>Sign Up</Text>
                     </TouchableOpacity>
                 </View>
             </Animatable.View >

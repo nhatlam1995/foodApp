@@ -27,13 +27,13 @@ const HeaderCustom = (props) => {
                                 props.onPressFavorite()
                                 props.flag === false ? showToast(`You liked this ${props.name} `) : showToast(`You unliked this ${props.name}`)
                             }}>
-                                {props.flag === false ? <MaterialCommunityIcons name="heart-outline" color='#4dc2f8' size={18} /> : <MaterialCommunityIcons name="heart" color='#4dc2f8' size={18} />}
+                                {props.flag === false ? <MaterialCommunityIcons name="heart-outline" color={colors.accent} size={18} /> : <MaterialCommunityIcons name="heart" color={colors.accent} size={18} />}
                             </TouchableOpacity>
                             <TouchableOpacity style={styles.button} onPress={() => {
                                 showToast('Added into cart!')
                                 props.onPressCart()
                             }}>
-                                <MaterialCommunityIcons name="cart-outline" color='#4dc2f8' size={18} />
+                                <MaterialCommunityIcons name="cart-outline" color={colors.accent} size={18} />
                             </TouchableOpacity>
                         </View>
                     </View>
@@ -74,13 +74,13 @@ const HeaderCustom = (props) => {
                         {search ?
                             <View style={{ flexDirection: 'row', alignItems: 'center', width: '75%' }}>
                                 <View style={styles.button}>
-                                    <Ionicons name="search-outline" color='#4dc2f8' size={18} />
+                                    <Ionicons name="search-outline" color={colors.accent} size={18} />
                                 </View>
                                 <TextInput placeholder="Search here" style={{ marginLeft: 10, height: 30, width: '100%', backgroundColor: 'white', }}>
 
                                 </TextInput>
                                 <TouchableOpacity onPress={() => setSearch(false)}>
-                                    <Ionicons name="close-outline" color='#4dc2f8' size={18} />
+                                    <Ionicons name="close-outline" color={colors.accent} size={18} />
                                 </TouchableOpacity>
                             </View>
                             :
@@ -88,7 +88,7 @@ const HeaderCustom = (props) => {
                                 setSearch(true)
                                 props.onPressSearch
                             }} >
-                                <Ionicons name="search-outline" color='#4dc2f8' size={18} />
+                                <Ionicons name="search-outline" color={colors.accent} size={18} />
                             </TouchableOpacity>}
                         {!search ? <View style={{ alignSelf: 'center' }}>
                             <Text style={styles.text}>{props.title}</Text>
@@ -135,7 +135,7 @@ const styles = StyleSheet.create({
         borderRadius: 15,
         justifyContent: 'center',
         alignItems: 'center',
-        borderColor: '#4dc2f8',
+        borderColor: colors.accent,
         borderWidth: 1
     },
     leftRightButton: {
@@ -145,7 +145,7 @@ const styles = StyleSheet.create({
         borderRadius: 15,
         justifyContent: 'center',
         alignItems: 'center',
-        borderColor: '#4dc2f8',
+        borderColor: colors.accent,
         borderWidth: 1
     },
     noButton: {
@@ -156,18 +156,18 @@ const styles = StyleSheet.create({
         width: 6.67,
         height: 13.33,
         resizeMode: 'contain',
-        tintColor: '#4dc2f8'
+        tintColor: colors.accent
     },
     imgNoti: {
         width: '50%',
         height: '100%',
         resizeMode: 'contain',
-        tintColor: '#4dc2f8'
+        tintColor: colors.accent
     },
     text: {
         fontSize: 20,
         alignSelf: 'center',
         fontFamily: 'Roboto',
-        color: '#4dc2f8'
+        color: colors.accent
     }
 })

@@ -6,6 +6,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import Feather from 'react-native-vector-icons/Feather';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { colors } from '../../../assets/strings'
 
 const Register = () => {
     const { navigate } = useNavigation();
@@ -93,8 +94,8 @@ const Register = () => {
                                 <Text style={{ ...styles.textSign, color: 'white' }}>Sign Up</Text>
                             </LinearGradient>
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={() => navigate('LoginScreen')} style={{ ...styles.signIn, borderColor: '#4dc2f8', borderWidth: 1, marginTop: 15 }}>
-                            <Text style={{ ...styles.textSign, color: '#4dc2f8' }}>Already have an account?</Text>
+                        <TouchableOpacity onPress={() => navigate('LoginScreen')} style={{ ...styles.signIn, borderColor: colors.accent, borderWidth: 1, marginTop: 15 }}>
+                            <Text style={{ ...styles.textSign, color: colors.accent }}>Already have an account?</Text>
                         </TouchableOpacity>
                     </View>
                 </ScrollView>

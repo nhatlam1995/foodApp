@@ -1,4 +1,4 @@
-import { useNavigation } from '@react-navigation/core';
+import { useIsFocused, useNavigation } from '@react-navigation/core';
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, SafeAreaView, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { BottomSheet } from 'react-native-elements';
@@ -16,14 +16,21 @@ import { colors } from '../../../../assets/strings'
 
 const ProfileScreen = () => {
     const dispatch = useDispatch();
+    const [data, setData] = useState([]);
 
-    useEffect(() => {
-        dispatch(getUserInfo());
-    }, [userData])
+    const isFocused = useIsFocused();
 
     const userData = useSelector((state) => state.user);
 
-    console.log('User Data: ', userData)
+    useEffect(() => {
+        dispatch(getUserInfo());
+        setData(userData.data);
+    }, [])
+
+    useEffect(() => {
+        dispatch(getUserInfo());
+        setData(userData.data);
+    }, [isFocused])
 
     const { navigate } = useNavigation();
     const [isVisible, setVisible] = useState(false);
@@ -38,14 +45,6 @@ const ProfileScreen = () => {
         dispatch(actionLogOut);
         const actionClearCart = removeAllFromCartAction();
         dispatch(actionClearCart);
-    }
-
-    if (userData.data.response ? userData.data.response.loading : true) {
-        return (
-            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                <ActivityIndicator size="large" />
-            </View>
-        )
     }
 
     return (
@@ -89,10 +88,10 @@ const ProfileScreen = () => {
                     <View style={{ width: '90%', alignSelf: 'center', }}>
                         <Text style={{ ...styles.textMessage, fontWeight: 'bold' }}>Please contact: </Text>
                         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                            <Text style={{ ...styles.textMessage, fontWeight: 'bold' }}>Email: </Text><Text style={styles.textMessage}>nhatlam1695 @gmail.com</Text>
+                            <Text style={{ ...styles.textMessage, fontWeight: 'bold' }}>Email: </Text><Text style={styles.textMessage}>{data.email}</Text>
                         </View>
                         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                            <Text style={{ ...styles.textMessage, fontWeight: 'bold' }}>Mobile: </Text><Text style={styles.textMessage}>0389935371</Text>
+                            <Text style={{ ...styles.textMessage, fontWeight: 'bold' }}>Mobile: </Text><Text style={styles.textMessage}>{data.phonenumber}</Text>
                         </View>
                     </View>
                     <View style={styles.button}>
@@ -116,10 +115,7 @@ const ProfileScreen = () => {
                             marginTop: 15,
                             marginBottom: 5
                         }]}>
-                            {userData.data.response ? userData.data.response.user.fullname : null}
-                            <TouchableRipple onPress={() => { }}>
-                                <AntDesign name="edit" size={20} color={colors.accent} />
-                            </TouchableRipple>
+                            {data.fullname}
                         </Title>
                     </View>
                 </View>
@@ -134,33 +130,27 @@ const ProfileScreen = () => {
                 </View>
                 <View style={styles.row}>
                     <MaterialCommunityIcons name="phone" color="#777777" size={20} />
-                    <Text style={{ color: "#777777", marginLeft: 20 }}>{userData.data.response ? userData.data.response.user.phonenumber : null}</Text>
+                    <Text style={{ color: "#777777", marginLeft: 20 }}>{data.phonenumber}</Text>
                 </View>
                 <View style={styles.row}>
                     <MaterialCommunityIcons name="email" color="#777777" size={20} />
-                    <Text style={{ color: "#777777", marginLeft: 20 }}>{userData.data.response ? userData.data.response.user.email : null}</Text>
+                    <Text style={{ color: "#777777", marginLeft: 20 }}>{data.email}</Text>
                 </View>
             </View>
 
             <View style={styles.infoBoxWrapper}>
-                <TouchableOpacity onPress={() => navigate("MemberScreen", { point: userData.data.response ? userData.data.response.user.memberPoints : null })} style={styles.infoBox}>
-                    <Title>{userData.data.response ? userData.data.response.user.memberPoints : null}</Title>
+                <View style={styles.infoBox}>
+                    <Title>{data.memberPoints}</Title>
                     <Caption>Points</Caption>
-                </TouchableOpacity>
+                </View>
                 <View style={{ borderRightColor: colors.accent, borderRightWidth: 1 }} />
-                <TouchableOpacity onPress={() => navigate("HistoryScreen", { orders: userData.data.response ? userData.data.response.user.orderData.length : null })} style={styles.infoBox}>
-                    <Title>{userData.data.response ? userData.data.response.user.orderData.length : null}</Title>
+                <TouchableOpacity onPress={() => navigate("HistoryScreen", { orders: data.orderData })} style={styles.infoBox}>
+                    <Title>{data.orderData ? data.orderData.length : 0}</Title>
                     <Caption>Orders</Caption>
                 </TouchableOpacity>
             </View>
 
             <ScrollView style={styles.menuWrapper}>
-                <TouchableRipple onPress={() => { }}>
-                    <View style={styles.menuItem}>
-                        <MaterialCommunityIcons name="share-outline" color="#4dc2f8" size={25} />
-                        <Text style={styles.menuItemText}>Tell Your Friends</Text>
-                    </View>
-                </TouchableRipple>
                 <TouchableRipple onPress={() => toggleModal()}>
                     <View style={styles.menuItem}>
                         <MaterialCommunityIcons name="account-check-outline" color="#4dc2f8" size={25} />

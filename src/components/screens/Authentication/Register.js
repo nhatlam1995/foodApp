@@ -6,16 +6,21 @@ import LinearGradient from 'react-native-linear-gradient';
 import Feather from 'react-native-vector-icons/Feather';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { useDispatch, useSelector } from 'react-redux';
 import { colors } from '../../../assets/strings'
+import { signUp } from '../../../redux/actions';
 
 const Register = () => {
     const { navigate } = useNavigation();
-    const [fullName, setFullName] = useState('');
+    const dispatch = useDispatch();
+    const [fullname, setFullName] = useState('');
     const [email, setEmail] = useState('');
-    const [phoneNumber, setPhoneNumber] = useState('');
+    const [phonenumber, setPhoneNumber] = useState('');
     const [password, setPassword] = useState('');
     const [validate, setValidate] = useState(false);
     const [secureEntry, setSecureEntry] = useState(true);
+
+    const registerData = useSelector(state => state.register)
 
     const validateEmail = (text) => {
         let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
@@ -31,6 +36,26 @@ const Register = () => {
         }
     }
 
+    const onPressRegister = () => {
+        if (fullname == '' || email == '' || phonenumber == '' || password == '') {
+            console.log('fail')
+        }
+        else if (phonenumber.toString().length < 8) {
+            console.log('phone', phonenumber.toString().length)
+        }
+        else {
+            if (validate) {
+                console.log(fullname, email, phonenumber, password, validate)
+                dispatch(signUp(email, phonenumber, password, fullname))
+            }
+            else {
+                console.log('Check ur email')
+            }
+        }
+    }
+
+    console.log(registerData)
+
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.header}>
@@ -41,7 +66,7 @@ const Register = () => {
                     <Text style={styles.textFooter}>Full name</Text>
                     <View style={styles.action}>
                         <FontAwesome name="user-o" color='#85c2ed' size={20} />
-                        <TextInput placeholder="Please type Full Name" style={styles.textInput} onChangeText={setFullName} value={fullName} />
+                        <TextInput placeholder="Please type Full Name" style={styles.textInput} onChangeText={setFullName} value={fullname} />
                     </View>
 
                     <Text style={{ ...styles.textFooter, marginTop: 25 }}>Email</Text>
@@ -58,7 +83,7 @@ const Register = () => {
                     <Text style={{ ...styles.textFooter, marginTop: 25 }}>Phone Number</Text>
                     <View style={styles.action}>
                         <MaterialCommunityIcons name="cellphone" color='#85c2ed' size={20} />
-                        <TextInput placeholder="Please type Phone Number" keyboardType="numeric" style={styles.textInput} onChangeText={setPhoneNumber} value={phoneNumber} />
+                        <TextInput placeholder="Please type Phone Number" keyboardType="numeric" style={styles.textInput} onChangeText={setPhoneNumber} value={phonenumber} />
                     </View>
 
                     <Text style={{ ...styles.textFooter, marginTop: 25 }}>Password</Text>
@@ -89,7 +114,7 @@ const Register = () => {
                     </View>
 
                     <View style={styles.button}>
-                        <TouchableOpacity onPress={() => { }} style={styles.signIn}>
+                        <TouchableOpacity onPress={() => onPressRegister()} style={styles.signIn}>
                             <LinearGradient colors={['#5db8fe', '#39cff2']} style={styles.signIn}>
                                 <Text style={{ ...styles.textSign, color: 'white' }}>Sign Up</Text>
                             </LinearGradient>

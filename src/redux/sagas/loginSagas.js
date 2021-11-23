@@ -9,21 +9,25 @@ export function* watchLogin() {
 
 function* signInFlow(action) {
     const { email, password } = action.payload
+    try {
+        const response = yield postLogin(email, password)
 
-    const response = yield postLogin(email, password)
-
-    if (response !== undefined) {
-        if (response.success === true) {
-            yield put({ type: SIGN_IN_SUCCESS, response: response })
-            console.log('Login Saga response ', response)
-            storeData(response.data.token)
+        if (response !== undefined) {
+            if (response.success === true) {
+                yield put({ type: SIGN_IN_SUCCESS, response: response })
+                console.log('Login Saga response ', response)
+                storeData(response.data.token)
+            }
+            else {
+                yield put({ type: SIGN_IN_ERROR, response: response })
+            }
         }
         else {
             yield put({ type: SIGN_IN_ERROR, response: response })
         }
-    }
-    else {
-        yield put({ type: SIGN_IN_ERROR, response: response })
+    } catch (error) {
+        console.log('Login Sagas error: ', error)
+        return error
     }
 }
 

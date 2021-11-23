@@ -1,16 +1,14 @@
+import { useIsFocused, useNavigation } from '@react-navigation/core'
 import React, { useEffect, useState } from 'react'
-import { Animated, Dimensions, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import { FlatList } from 'react-native-gesture-handler'
-import { useDispatch, useSelector } from 'react-redux'
-import { addToCartAction, removeFromCartAction, removeItemFromCartAction } from '../../../redux/actions'
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { Dimensions, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import LinearGradient from 'react-native-linear-gradient'
-import { useNavigation } from '@react-navigation/core'
-import Swipeable from 'react-native-gesture-handler/Swipeable';
 import { SwipeableFlatList, SwipeableQuickActionButton, SwipeableQuickActions } from 'react-native-swipe-list'
-import HeaderCustom from '../../CustomComponents/HeaderCustom'
-import { arrayIsEmpty, thousand } from '../../../ultils/commonFunctions'
-import { colors } from '../../../assets/strings'
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
+import { useDispatch, useSelector } from 'react-redux'
+import { colors } from '../../../../assets/strings'
+import { addOrder, addToCartAction, getUserInfo, removeFromCartAction, removeItemFromCartAction } from '../../../../redux/actions'
+import { arrayIsEmpty, thousand } from '../../../../ultils/commonFunctions'
+import HeaderCustom from '../../../CustomComponents/HeaderCustom'
 
 export const windowWidth = Dimensions.get('window').width;
 export const windowHeight = Dimensions.get('window').height;
@@ -20,6 +18,8 @@ const CartScreen = () => {
     const dispatch = useDispatch();
     const total = data.reduce((sum, item) => sum + item.quantity * item.price, 0);
     const quantity = data.reduce((quantity, item) => quantity + item.quantity, 0);
+    const orderData = useSelector(state => state.order)
+    const [dataSend, setDataSend] = useState(null);
 
     const { jumpTo, navigate } = useNavigation();
 
@@ -30,15 +30,27 @@ const CartScreen = () => {
         dispatch(action)
     }
 
+    const isFocused = useIsFocused();
+
     useEffect(() => {
+        setDataSend(Object.assign({ total: total, points: total / 1000, orderDetail: data }))
+    }, [isFocused])
+
+    useEffect(() => {
+        setDataSend(Object.assign({ total: total, points: total / 1000, orderDetail: data }))
     }, [flag])
 
     const onClickCheckOut = () => {
         console.log('orderDetail', data)
         console.log('total + point', total, total / 1000)
+        dispatch(addOrder(dataSend))
+        dispatch(getUserInfo())
+        if (orderData.data.response.message === "Success") {
+            navigate("ConfirmOrder")
+        }
     }
 
-    console.log('Cart Data check:', data)
+    console.log('ooooooooooooo', orderData)
 
     return (
         <View style={{ flex: 1, backgroundColor: 'white' }}>
@@ -109,8 +121,7 @@ const CartScreen = () => {
                                     </View>
                                 </View>
                             </View>
-                        )
-                        }
+                        )}
                     />
                 </View>
                 :
@@ -140,7 +151,7 @@ const CartScreen = () => {
                             </View>
                         </View>
                         <TouchableOpacity onPress={() => { onClickCheckOut() }} style={styles.checkOutButton}>
-                            <Text style={styles.textNormal}>Total: {thousand(total)}</Text>
+                            <Text style={styles.textTotal}>Total: {thousand(total)}</Text>
                         </TouchableOpacity>
                     </LinearGradient>
                 </View>
@@ -284,5 +295,10 @@ const styles = StyleSheet.create({
         color: 'white',
         fontWeight: 'bold',
         fontSize: 16
+    },
+    textTotal: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        color: colors.accent
     }
 })

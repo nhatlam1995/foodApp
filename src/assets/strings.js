@@ -43,4 +43,4 @@ const fonts = {
   }
 }
 
-export { colors, fonts, sizes }
+export { colors, fonts, sizes, width, height }

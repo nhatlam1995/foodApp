@@ -6,7 +6,6 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { useSelector } from "react-redux";
-import CartScreen from "../components/screens/User/CartScreen";
 import FavoriteScreen from "../components/screens/User/FavoriteScreen";
 import FoodDetailScreen from "../components/screens/User/FoodDetailScreen";
 import HomeScreen from "../components/screens/User/HomeScreen";
@@ -16,6 +15,8 @@ import MembershipScreen from "../components/screens/User/Profile/MembershipScree
 import OrderDetailScreen from "../components/screens/User/Profile/OrderDetailScreen";
 import ProfileScreen from "../components/screens/User/Profile/ProfileScreen";
 import SettingsScreen from "../components/screens/User/Profile/SettingsScreen";
+import ConfirmOrder from "../components/screens/User/Cart/ConfirmOrder";
+import CartScreen from "../components/screens/User/Cart/CartScreen";
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -49,6 +50,7 @@ function CartStack() {
             screenOptions={{ headerShown: false }}>
             <Stack.Screen name='CartScreen' component={CartScreen} />
             <Stack.Screen name='FoodDetail' component={FoodDetailScreen} />
+            <Stack.Screen name='ConfirmOrder' component={ConfirmOrder} />
         </Stack.Navigator>
     )
 }

@@ -16,6 +16,7 @@ const HomeScreen = () => {
 
     const homeData = useSelector((state) => state.home);
     const userFavorite = useSelector((state) => state.favorite)
+    const userInfo = useSelector((state) => state.user)
 
     useEffect(() => {
         dispatch(getCategory());

@@ -40,6 +40,21 @@ const FavoriteScreen = () => {
         }, 2000);
     }
 
+    const onPressFoodItem = (item) => {
+        const found = data.some(i => i._id === item._id)
+        navigate('FoodDetail', {
+            id: item._id,
+            url: item.url,
+            weight: item.weight,
+            price: item.price,
+            name: item.name,
+            nation: item.nation,
+            status: item.status,
+            description: item.description,
+            isFav: found,
+        })
+    }
+
     return (
         <View style={{ flex: 1, backgroundColor: 'white' }}>
             <HeaderCustom title={'Favorite'} />
@@ -60,16 +75,7 @@ const FavoriteScreen = () => {
                         return (
                             <View key={item._id} style={{ ...styles.card, marginBottom: 5 }}>
                                 <View style={{ width: '85%', height: '85%', flexDirection: 'row' }}>
-                                    <TouchableOpacity style={styles.wrapper} onPress={() => navigate('FoodDetail', {
-                                        id: item._id,
-                                        url: item.url,
-                                        weight: item.weight,
-                                        price: item.price,
-                                        name: item.name,
-                                        nation: item.nation,
-                                        status: item.status,
-                                        description: item.description
-                                    })}>
+                                    <TouchableOpacity style={styles.wrapper} onPress={() => onPressFoodItem(item)}>
                                         <Image source={{ uri: item.url }} style={styles.image} />
                                     </TouchableOpacity>
                                     <View style={styles.desc}>

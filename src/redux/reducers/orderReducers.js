@@ -1,32 +1,34 @@
-import { GET_USER_INFO_FAIL, GET_USER_INFO_SUCCESS } from "../actions/actionTypes"
+import { ADD_ORDER_FAIL, ADD_ORDER_SUCCESS } from "../actions/actionTypes"
 
 const initialState = {
     loading: true,
     data: []
 }
 
-const userReducers = (state = initialState, action) => {
+const orderReducers = (state = initialState, action) => {
     try {
         switch (action.type) {
-            case GET_USER_INFO_SUCCESS:
+            case ADD_ORDER_SUCCESS:
                 return {
                     ...state,
-                    data: action.response.user,
+                    data: action,
                     loading: false
                 }
-            case GET_USER_INFO_FAIL:
+            case ADD_ORDER_FAIL:
                 return {
                     ...state,
                     data: action,
                     loading: true
                 }
             default:
-                return { ...state }
+                return {
+                    ...state
+                }
         }
     } catch (error) {
-        console.log('User Reducers Error', error)
+        console.log('Order Reducers Error', error)
         return error
     }
 }
 
-export default userReducers;
+export default orderReducers;

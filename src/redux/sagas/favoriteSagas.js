@@ -63,12 +63,10 @@ function* setUserFavorite(itemId) {
         }
         else
             yield put({ type: SET_USER_FAVORITE_FAIL, response: response })
-
     } catch (error) {
         console.log('Set User favorite Error: ', error)
         return error
     }
-
 }
 
 export function* watchSetFavorite() {

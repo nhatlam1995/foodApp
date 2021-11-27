@@ -68,7 +68,7 @@ export default function Auth() {
         getData()
         if (auth.error) {
             setLoading(false)
-            setModalVisible(!isModalVisible)
+            setModalVisible(true)
             setModalMessage(auth.data.response.message)
         }
     }, [auth])

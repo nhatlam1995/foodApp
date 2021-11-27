@@ -1,26 +1,43 @@
-import { useNavigation } from '@react-navigation/core';
-import React, { useState } from 'react';
-import { ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View, SafeAreaView } from 'react-native';
+import { useIsFocused, useNavigation } from '@react-navigation/core';
+import React, { useEffect, useState } from 'react';
+import { ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View, SafeAreaView, ActivityIndicator, BackHandler, Alert } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import LinearGradient from 'react-native-linear-gradient';
+import Modal from 'react-native-modal';
 import Feather from 'react-native-vector-icons/Feather';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useDispatch, useSelector } from 'react-redux';
 import { colors } from '../../../assets/strings'
-import { signUp } from '../../../redux/actions';
+import { signUp, signUpNavigate } from '../../../redux/actions';
+import { useBackHandler } from '@react-native-community/hooks'
 
 const Register = () => {
-    const { navigate } = useNavigation();
+    const registerData = useSelector(state => state.register)
     const dispatch = useDispatch();
+
+    const { push } = useNavigation();
     const [fullname, setFullName] = useState('');
     const [email, setEmail] = useState('');
     const [phonenumber, setPhoneNumber] = useState('');
     const [password, setPassword] = useState('');
     const [validate, setValidate] = useState(false);
     const [secureEntry, setSecureEntry] = useState(true);
+    const [isModalVisible, setModalVisible] = useState(false);
+    const [modalMessage, setModalMessage] = useState('');
+    const [loading, setLoading] = useState(false);
 
-    const registerData = useSelector(state => state.register)
+    const handleBackButtonClick = () => {
+        push('LoginScreen');
+        return true;
+    }
+
+    useEffect(() => {
+        BackHandler.addEventListener('hardwareBackPress', handleBackButtonClick);
+        return () => {
+            BackHandler.removeEventListener('hardwareBackPress', handleBackButtonClick);
+        };
+    }, []);
 
     const validateEmail = (text) => {
         let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
@@ -37,27 +54,85 @@ const Register = () => {
     }
 
     const onPressRegister = () => {
+        setLoading(true)
         if (fullname == '' || email == '' || phonenumber == '' || password == '') {
-            console.log('fail')
+            setModalVisible(true);
+            setModalMessage('Please fill information');
+            setLoading(false);
         }
-        else if (phonenumber.toString().length < 8) {
-            console.log('phone', phonenumber.toString().length)
+        else if (phonenumber.toString().length < 10 || phonenumber.toString().length > 10) {
+            setModalVisible(true);
+            setModalMessage('Phone Number must have 10 numbers');
+            setLoading(false);
+
         }
         else {
             if (validate) {
-                console.log(fullname, email, phonenumber, password, validate)
                 dispatch(signUp(email, phonenumber, password, fullname))
+                setLoading(true);
             }
             else {
-                console.log('Check ur email')
+                setModalVisible(true);
+                setModalMessage('Wrong email format');
+                setLoading(false);
             }
         }
     }
 
-    console.log(registerData)
+    const toggleModal = () => {
+        setModalVisible(false)
+    };
+
+    useEffect(() => {
+        if (registerData.message === null) {
+        }
+        else if (registerData.error) {
+            setLoading(false);
+            setModalVisible(true);
+            setModalMessage(registerData.message);
+        }
+        else if (!registerData.error) {
+            setLoading(false);
+            setModalVisible(true);
+            setModalMessage(registerData.message);
+            push('LoginScreen')
+        }
+    }, [registerData])
+
+    console.log('aaaaaaaaa', registerData)
+
+    if (loading) {
+        return (
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                <ActivityIndicator size="large" />
+            </View>
+        )
+    }
 
     return (
         <SafeAreaView style={styles.container}>
+            <Modal
+                testID={'modal'}
+                backdropColor="#B4B3DB"
+                backdropOpacity={0.8}
+                animationIn="zoomInDown"
+                animationOut="zoomOutUp"
+                animationInTiming={600}
+                animationOutTiming={600}
+                backdropTransitionInTiming={600}
+                backdropTransitionOutTiming={600}
+                isVisible={isModalVisible}
+                onBackdropPress={toggleModal} >
+                <LinearGradient colors={['#5db8fe', '#39cff2']} style={{ backgroundColor: 'white', justifyContent: 'center', alignItems: 'center', paddingVertical: 15, borderRadius: 30 }}>
+                    <Feather name="alert-triangle" size={35} color='yellow' />
+                    <Text style={styles.textMessage}>{modalMessage}</Text>
+                    <View style={styles.buttonModal}>
+                        <TouchableOpacity onPress={() => toggleModal()} style={{ ...styles.buttonColor, borderColor: 'white', borderWidth: 1 }}>
+                            <Text style={{ ...styles.textButton, color: 'white' }}>I Got It</Text>
+                        </TouchableOpacity>
+                    </View>
+                </LinearGradient>
+            </Modal>
             <View style={styles.header}>
                 <Text style={styles.textHeader}>Welcome</Text>
             </View>
@@ -119,7 +194,7 @@ const Register = () => {
                                 <Text style={{ ...styles.textSign, color: 'white' }}>Sign Up</Text>
                             </LinearGradient>
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={() => navigate('LoginScreen')} style={{ ...styles.signIn, borderColor: colors.accent, borderWidth: 1, marginTop: 15 }}>
+                        <TouchableOpacity onPress={() => push('LoginScreen')} style={{ ...styles.signIn, borderColor: colors.accent, borderWidth: 1, marginTop: 15 }}>
                             <Text style={{ ...styles.textSign, color: colors.accent }}>Already have an account?</Text>
                         </TouchableOpacity>
                     </View>
@@ -195,5 +270,25 @@ const styles = StyleSheet.create({
     },
     colorTerms: {
         color: 'gray'
+    },
+    buttonModal: {
+        width: '50%',
+        alignItems: 'center'
+    },
+    buttonColor: {
+        width: '100%',
+        height: 50,
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: 10
+    },
+    textButton: {
+        fontSize: 18,
+        fontWeight: 'bold',
+    },
+    textMessage: {
+        color: 'white',
+        fontSize: 18,
+        marginVertical: 20
     }
 })

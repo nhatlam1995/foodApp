@@ -12,7 +12,7 @@ import { loginAction } from '../../../redux/actions';
 import { colors } from '../../../assets/strings'
 
 const Login = () => {
-    const { navigate } = useNavigation();
+    const { navigate, push } = useNavigation();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('admin');
     const [validate, setValidate] = useState(false);

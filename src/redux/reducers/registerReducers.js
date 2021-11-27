@@ -1,30 +1,25 @@
-import { SIGN_UP_FAIL, SIGN_UP_SUCCESS } from "../actions/actionTypes";
+import { SIGN_UP_FAIL, SIGN_UP_NAVIGATE, SIGN_UP_SUCCESS } from "../actions/actionTypes";
 
 const initialState = {
-    loading: true,
-    data: [],
+    loading: false,
     error: false,
+    message: null,
 };
 
 const registerReducers = (state = initialState, action) => {
     try {
         switch (action.type) {
             case SIGN_UP_SUCCESS:
-                console.log('stttttt', state)
-                console.log('actionnnnnn', action)
-                console.log('payloadd', action.payload)
                 return {
                     ...state,
-                    data: action.response.data,
-                    loading: false,
-                    error: false
+                    error: false,
+                    message: action.response.message
                 }
             case SIGN_UP_FAIL:
                 return {
                     ...state,
-                    data: action.response,
-                    loading: true,
-                    false: true
+                    error: true,
+                    message: action.response.message
                 }
             default:
                 return { ...state }

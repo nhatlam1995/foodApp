@@ -1,4 +1,4 @@
-import { ADD_ORDER, ADD_TO_CART, GET_CATEGORY_INFO, GET_USER_FAVORITE, GET_USER_INFO, LOG_OUT, POST_LOGIN, REMOVE_ALL_FROM_CART, REMOVE_FROM_CART, REMOVE_ITEM_FROM_CART, REMOVE_USER_FAVORITE, SET_USER_FAVORITE, SIGN_UP } from "./actionTypes"
+import { ADD_ORDER, ADD_TO_CART, GET_CATEGORY_INFO, GET_USER_FAVORITE, GET_USER_INFO, LOG_OUT, POST_LOGIN, REMOVE_ALL_FROM_CART, REMOVE_FROM_CART, REMOVE_ITEM_FROM_CART, REMOVE_USER_FAVORITE, SET_USER_FAVORITE, SIGN_UP, SIGN_UP_NAVIGATE } from "./actionTypes"
 
 export const loginAction = (email, password, isRemember) => {
     return {
@@ -84,5 +84,11 @@ export const signUp = (email, phonenumber, password, fullname) => {
     return {
         type: SIGN_UP,
         payload: { email, phonenumber, password, fullname }
+    }
+}
+
+export const signUpNavigate = () => {
+    return {
+        type: SIGN_UP_NAVIGATE
     }
 }
